@@ -1,6 +1,8 @@
 # Elixir Beauty Date API SDK
 
-The official Beauty Date API client package for Elixir.
+The official Beauty Date API client package for Elixir. It uses [HTTPoison](https://github.com/edgurgel/httpoison) to deal with HTTP, implements all the [JSON API](http://jsonapi.org/) standards and was built specially for the [BeautyDate API V2](https://beautydate.com.br/api/v2/docs/businesses).
+
+The "pipe operator oriented" query syntax was inspired by Decisiv's [json_api_client](https://github.com/Decisiv/json_api_client) package. But it's a completely different implementation.
 
 ## Installation [WIP]
 
@@ -100,3 +102,12 @@ request(endpoint: "businesses", type: "business")
 |> id(3)
 |> delete
 ```
+
+## To Do
+- [ ] Testing.
+- [ ] Typespecs.
+- [ ] Documentation.
+- [ ] Finish README; Add responses.
+- [ ] Fix Environment variables.
+- [ ] Publish Hex package.
+
