@@ -6,8 +6,13 @@ defmodule BeautyDateAPI.MixProject do
       app: :beautydate_api,
       version: "0.1.0",
       elixir: "~> 1.6",
+      build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      description: description(),
+      package: package(),
+      deps: deps(),
+      name: "BeautyDateAPI",
+      source_url: "https://github.com/b2beauty/beautydate-sdk-elixir/"
     ]
   end
 
@@ -23,8 +28,19 @@ defmodule BeautyDateAPI.MixProject do
     [
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.0"}
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Fernando Schuindt", "Tiago Guedes"],
+      links: %{"GitHub" => "https://github.com/b2beauty/beautydate-sdk-elixir/"}
+    ]
+  end
+
+  defp description do
+    """
+      The official Beauty Date API client package for Elixir.
+    """
   end
 end
