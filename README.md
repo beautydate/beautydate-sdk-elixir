@@ -156,4 +156,4 @@ B2.request(endpoint: "businesses", type: "business")
 - [ ] Finish README; Add responses.
 - [x] Fix Environment variables.
 - [ ] Publish Hex package. *This will wait.*
-
+- [x] Fix the `/` requirement in Config URL.

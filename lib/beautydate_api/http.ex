@@ -2,7 +2,9 @@ defmodule BeautyDateAPI.HTTP do
   use HTTPoison.Base
 
   def process_url(url) do
-    get_env(:b2b_api_url) <> url
+    api_url = get_env(:b2b_api_url)
+
+    slashfy(api_url, slashfied?(api_url)) <> url
   end
 
   def process_response_body(body) do
@@ -22,4 +24,10 @@ defmodule BeautyDateAPI.HTTP do
   end
 
   defp get_env(key), do: Application.get_env(:beautydate_api, key)
+
+  defp slashfy(string, true), do: string
+
+  defp slashfy(string, false), do: string <> "/"
+
+  defp slashfied?(string), do: String.ends_with?(string, "/")
 end
