@@ -137,6 +137,151 @@ request(endpoint: "businesses", type: "business")
 |> delete
 ```
 
+### Responses
+
+The API responses comes in the following format:
+```elixir
+# When something goes wrong during the HTTP connection.
+{:error, reason}
+
+# When everything is ok with the HTTP connection.
+{ok, response}
+```
+
+Here's a successful response sample from a fetch:
+```elixir
+{:ok,
+ %HTTPoison.Response{
+   body: %{
+     "data" => [
+       %{
+         "attributes" => %{
+           "description" => "",
+           "name" => "Maria Estética",
+           "website" => "http://lalalala.com.br"
+         },
+         "id" => "3",
+         "links" => %{"self" => "http://localhost:3000/api/v2/businesses/3"},
+         "type" => "businesses"
+       }
+     ],
+     "included" => [
+       %{
+         "attributes" => %{
+           "address_type" => "work",
+           "addressable_id" => 3,
+           "addressable_type" => "Business",
+           "city" => "Cidade Aleatória",
+           "complement" => "Apto. 999",
+           "country" => "BR",
+           "created_at" => "2018-03-08T17:40:25.949-03:00",
+           "neighborhood" => "Algum Lugar",
+           "state" => "PA",
+           "street" => "Alguma Rua",
+           "street_number" => "NUMERO",
+           "updated_at" => "2018-03-08T17:40:25.949-03:00",
+           "zipcode" => "99999999"
+         },
+         "id" => "39",
+         "links" => %{"self" => "http://localhost:3000/api/v2/addresses/39"},
+         "relationships" => %{
+           "addressable" => %{
+             "data" => %{"id" => "3", "type" => "businesses"},
+             "links" => %{
+               "related" => "http://localhost:3000/api/v2/addresses/39/addressable",
+               "self" => "http://localhost:3000/api/v2/addresses/39/relationships/addressable"
+             }
+           }
+         },
+         "type" => "addresses"
+       }
+     ],
+     "links" => %{
+       "first" => "http://localhost:3000/api/v2/businesses?fields%5Baddress%5D=state&fields%5Bbusinesses%5D=name%2Cdescription%2Cwebsite&fields%5Breviews%5D=comment%2Crating&filter%5Bname%5D=Maria+Est%C3%A9tica&include=reviews%2Caddress&page%5Bnumber%5D=1&page%5Bsize%5D=10&sort=id%2C-name",
+       "last" => "http://localhost:3000/api/v2/businesses?fields%5Baddress%5D=state&fields%5Bbusinesses%5D=name%2Cdescription%2Cwebsite&fields%5Breviews%5D=comment%2Crating&filter%5Bname%5D=Maria+Est%C3%A9tica&include=reviews%2Caddress&page%5Bnumber%5D=1&page%5Bsize%5D=10&sort=id%2C-name"
+     },
+     "meta" => %{"record_count" => 1}
+   },
+   headers: [
+     {"X-Frame-Options", "SAMEORIGIN"},
+     {"X-XSS-Protection", "1; mode=block"},
+     {"X-Content-Type-Options", "nosniff"},
+     {"Access-Control-Allow-Origin", "*"},
+     {"Access-Control-Allow-Methods",
+      "GET, PUT, POST, PATCH, DELETE, OPTIONS, HEAD"},
+     {"Access-Control-Request-Method", "GET, POST, OPTIONS"},
+     {"Access-Control-Allow-Headers",
+      "*,x-requested-with,Content-Type,If-Modified-Since,If-None-Match"},
+     {"Access-Control-Max-Age", "0"},
+     {"Content-Type", "application/vnd.api+json"},
+     {"Vary", "Accept-Encoding, Origin"},
+     {"ETag", "W/\"2589f9edaaf1f2815e4edab7a17710e9\""},
+     {"Cache-Control", "max-age=0, private, must-revalidate"},
+     {"X-Meta-Request-Version", "0.3.4"},
+     {"X-Request-Id", "08c32e41-0a89-4cbc-b52a-2c34d86258d8"},
+     {"X-Runtime", "0.722823"},
+     {"X-Rack-CORS", "preflight-hit; no-origin"},
+     {"Transfer-Encoding", "chunked"}
+   ],
+   request_url: "http://localhost:3000/api/v2/businesses?fields[businesses]=name,description,website&fields[reviews]=comment,rating&fields[address]=state&include=reviews,address&sort=id,-name&page[number]=1&page[size]=10&filter[name]=Maria%20Est%C3%A9tica&custom1=1&custom2=2",
+   status_code: 200
+ }}
+```
+
+And here's a failing HTTP request response. In this case for a unknown domain name:
+```elixir
+{:error, %HTTPoison.Error{id: nil, reason: :nxdomain}}
+```
+
+**Warning**
+
+Note those are errors related with the HTTP. But during API related errors it stills returns a `{:ok, response}` tuple, because the HTTP request was indeed successful. API errors lay inside the response. Eg.:
+
+```elixir
+{:ok,
+ %HTTPoison.Response{
+   body: %{
+     "errors" => [
+       %{
+         "code" => 127,
+         "detail" => "Please, check the user's token (token)",
+         "href" => nil,
+         "id" => nil,
+         "links" => nil,
+         "meta" => nil,
+         "source" => nil,
+         "status" => "401",
+         "title" => "Invalid user token"
+       }
+     ]
+   },
+   headers: [
+     {"X-Frame-Options", "SAMEORIGIN"},
+     {"X-XSS-Protection", "1; mode=block"},
+     {"X-Content-Type-Options", "nosniff"},
+     {"Access-Control-Allow-Origin", "*"},
+     {"Access-Control-Allow-Methods",
+      "GET, PUT, POST, PATCH, DELETE, OPTIONS, HEAD"},
+     {"Access-Control-Request-Method", "GET, POST, OPTIONS"},
+     {"Access-Control-Allow-Headers",
+      "*,x-requested-with,Content-Type,If-Modified-Since,If-None-Match"},
+     {"Access-Control-Max-Age", "0"},
+     {"Content-Type", "application/json; charset=utf-8"},
+     {"Vary", "Accept-Encoding, Origin"},
+     {"Cache-Control", "no-cache"},
+     {"X-Meta-Request-Version", "0.3.4"},
+     {"X-Request-Id", "1db62141-5604-4618-a301-4c812d8ae90f"},
+     {"X-Runtime", "0.789499"},
+     {"X-Rack-CORS", "preflight-hit; no-origin"},
+     {"Transfer-Encoding", "chunked"}
+   ],
+   request_url: "http://localhost:3000/api/v2/businesses?fields[businesses]=name,description,website&fields[reviews]=comment,rating&fields[address]=state&include=reviews,address&sort=id,-name&page[number]=1&page[size]=10&filter[name]=Maria%20Est%C3%A9tica&custom1=1&custom2=2",
+   status_code: 401
+ }}
+```
+
+Check the [HTTPoison](https://github.com/edgurgel/httpoison) [documentation](https://hexdocs.pm/httpoison/) for a better understanding of its responses.
+
 ## Tip About Namespaces
 
 The `BeautyDateAPI` module has many functions, when imported via `import` it may conflict with your local top-leveled ones. To overcome it, it's recommended that you either use its full namespace reference, like: `BeautyDateAPI.request/1`, `BeautyDateAPI.id/2`, `BeautyDateAPI.delete/1` and so on. Or you can set up a short alias to better help typing your queries. Eg.:
@@ -153,7 +298,8 @@ B2.request(endpoint: "businesses", type: "business")
 - [ ] Testing.
 - [ ] Typespecs.
 - [ ] Documentation.
-- [ ] Finish README; Add responses.
+- [x] Finish README; Add responses.
 - [x] Fix Environment variables.
 - [ ] Publish Hex package. *This will wait.*
 - [x] Fix the `/` requirement in Config URL.
+
