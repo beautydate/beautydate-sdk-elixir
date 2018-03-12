@@ -4,38 +4,72 @@ The official Beauty Date API client package for Elixir. It uses [HTTPoison](http
 
 The "pipe operator oriented" query syntax was inspired by Decisiv's [json_api_client](https://github.com/Decisiv/json_api_client) package. But it's a completely different implementation.
 
-## Installation [WIP]
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `beautydate_api` to your list of dependencies in `mix.exs`:
+## Installation
 
 ```elixir
 def deps do
   [
-    {:beautydate_api, "~> 0.1.0"}
+    {:beautydate_api, git: "https://github.com/b2beauty/beautydate-sdk-elixir.git"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/beautydate_api](https://hexdocs.pm/beautydate_api).
+## Configuration
+
+Add to your `config/config.exs`:
+
+```elixir
+config :beautydate_api,
+  b2b_api_url: "https://beautydate.com.br/",
+  b2b_api_consumer_token: "your_token_here",
+  agent: "web",
+  agent_version: "0.1.0"
+```
+
+### Environment-Based Configuration
+
+You can use different files for different environments. Eg.:
+
+`config/dev.exs`
+```elixir
+config :beautydate_api,
+  b2b_api_url: "http://localhost:3000/api/v2/",
+  b2b_api_consumer_token: "your_development_token_here",
+```
+
+`config/prod.exs`
+```elixir
+config :beautydate_api,
+  b2b_api_url: "https://beautydate.com.br/",
+  b2b_api_consumer_token: "your_production_token_here",
+```
+
+`config/config.exs`
+```elixir
+import_config "#{Mix.env()}.exs"
+
+config :beautydate_api,
+  agent: "web",
+  agent_version: "0.1.0"
+```
+
+This also allows for a `config/test.exs` config file.
 
 ## Usage
 
-First, import `BeautyDateAPI` inside your module to gain access to its functions:
+First, import `BeautyDateAPI` inside your module to gain direct access to its functions:
 ```elixir
 import BeautyDateAPI
 ```
 
-Then a set of functions will be available for you to query and interact with the exteral API:
+Then a set of functions will be top-level available for you to query and interact with the external API:
 
-**Fetch by URL**
+### Fetch by URL
 ```elixir
 fetch(request(endpoint: "businesses", type: "business"))
 ```
 
-**Fetch by composing query**
+### Fetch by composing query
 ```elixir
 # Eg.: 1, Small Queries.
 
@@ -61,7 +95,7 @@ request(endpoint: "businesses", type: "business")
 |> fetch
 ```
 
-**Update resource**
+### Update resource
 ```elixir
 request(endpoint: "businesses", type: "business")
 |> id(4)
@@ -73,7 +107,7 @@ request(endpoint: "businesses", type: "business")
 |> update
 ```
 
-**Create resource**
+### Create resource
 ```elixir
 new_business_payment = %BeautyDateAPI.Resource{
   type: "busines_payments",
@@ -96,11 +130,23 @@ request(endpoint: "business-payments/subscribe", type: "business_payments")
 |> create
 ```
 
-**Delete resource**
+### Delete resource
 ```elixir
 request(endpoint: "businesses", type: "business")
 |> id(3)
 |> delete
+```
+
+## Tip About Namespaces
+
+The `BeautyDateAPI` module has many functions, when imported via `import` it may conflict with your local top-leveled ones. To overcome it, it's recommended that you either use its full namespace reference, like: `BeautyDateAPI.request/1`, `BeautyDateAPI.id/2`, `BeautyDateAPI.delete/1` and so on. Or you can set up a short alias to better help typing your queries. Eg.:
+
+```Elixir
+alias BeautyDateAPI, as: B2
+
+B2.request(endpoint: "businesses", type: "business")
+|> B2.id(4)
+|> B2.fetch
 ```
 
 ## To Do
@@ -108,6 +154,6 @@ request(endpoint: "businesses", type: "business")
 - [ ] Typespecs.
 - [ ] Documentation.
 - [ ] Finish README; Add responses.
-- [ ] Fix Environment variables.
-- [ ] Publish Hex package.
+- [x] Fix Environment variables.
+- [ ] Publish Hex package. *This will wait.*
 
