@@ -27,7 +27,8 @@ defmodule BeautyDateAPI.MixProject do
   defp deps do
     [
       {:poison, "~> 3.1"},
-      {:httpoison, "~> 1.0"}
+      {:httpoison, "~> 1.0"},
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
     ]
   end
 
