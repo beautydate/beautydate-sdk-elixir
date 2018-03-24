@@ -10,6 +10,7 @@ defmodule BeautyDateAPI.HTTP do
   def process_response_body(body) do
     body
     |> Poison.decode!
+    |> BeautyDateAPI.ResponseErrorParser.parse
   end
 
   defp process_request_headers(headers) do
